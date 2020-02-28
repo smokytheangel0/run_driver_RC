@@ -18,6 +18,7 @@ let mut run = Command::new("flutter")
                     .spawn()
                     .expect("failed to run flutter run");
 ```
+)
 to reflect the file used to init your app for driver to use
 
 and line 292 (or the code
@@ -31,4 +32,5 @@ let mut driver = Command::new("flutter")
         .spawn()
         .expect("failed to start flutter using existing app");
 ```
+)
 to reflect the main file you use to start your driver tests        
