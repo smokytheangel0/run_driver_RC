@@ -165,7 +165,7 @@ fn main() {
                 for line in out.lines() {
                     let read_line = line.expect("failed to unwrap line in run stdout printer");
                     if read_line.clone().contains("No supported devices connected.") {
-                        println!("dart: no device connected!");
+                        panic!("dart: no device connected!");
                     }
                     if read_line.clone().contains("http") {
                         //split the attach address into a var
