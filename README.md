@@ -1,6 +1,11 @@
 # run_driver_RC
 flutter driver set up and run script for the Retrieval Collector or other location aware flutter app
 
+#setup
+after building a binary using cargo build, copy the resulting binary from
+target/release/run_driver to the flutter dir you wish to use it on
+it can then be run from there.
+
 #dependencies
 it is important that you have https://github.com/appium/io.appium.settings downloaded and built, and edit line 93
 or whichever line contains  ```Command::new("adb").arg("install")``` to include the path to the io.appium.settings apk
