@@ -1,0 +1,213 @@
+///*
+build apk debug
+install apk
+set $location_a set timer for $seconds
+run flutter -useprevious
+
+MEMORY+MAP INITIAL+DIRECT (HAPPY PATH)
+    tap plus button
+    return state to calling function
+    wait for field values from calling function (if any)
+    enter field values or ""
+    wait for whether or not to use map from calling function
+    if map(Happy_Path)
+        press map, tap map in center (should be centered on coordinates given) after tapping start
+        after now the location script should have timed out and changed to location_b
+        press refresh button (location icon between start and end)
+        tap map in center (should now be centered on the coordinates given) after pressing end
+        press done
+    if map(Off_Path)
+        tap map
+        press done
+        ensure snackbar warns both locations must be set
+        tap start and tap in center of the screen
+        ensure start icon is grey
+        tap done
+        ensure snackbar warns both locations must be set
+        location should now be location b
+        tap refresh and tap end and tap center of screen
+        ensure end icon is grey
+        tap the trash can
+        ensure snackbar shows saying are you sure
+        tap blow em away
+        location should now be location_a
+        tap start and tap in center of the screen
+        ensure start icon is grey
+        location should now be location_b
+        tap end and tap in center of the screen
+        ensure end icon is grey
+        tap done
+
+    return field values and states to calling function
+    
+    
+    press done
+
+    timer should have fired and reset location to location_c
+    ensure first list tile has walk icon
+    tap first listtile
+    ensure start is purple
+    ensure map is not disabled
+    ensure "0 seconds elapsed" is printed
+    timer should have fired and reset location to location_a
+    ensure start is purple
+    ensure end is red
+    save seconds value from the text
+    tap map
+    tap done
+    ensure state has not changed except timer which should be greater than the seconds value captured
+    timer should have fired and reset location to location_b
+    ensure start is green and end is red
+    keep seconds
+    tap map
+    tap done
+    ensure state has not changed at all
+    tap done
+    ensure first listtile has check mark icon
+
+MEMORY+MAP INITIAL+DIRECT(OFF PATH)
+    tap plus button
+    tap done button
+    ensure validation warning on first field
+    type "test" in first field
+    tap done button
+    ensure validation warning on seconds field
+    type a number in seconds field
+    tap done button
+    ensure snackbar warning that start and end need to be set shows
+    location should now be location_a
+    
+        ensure test is still in the first field
+    and the seconds entred in the seconds field
+    ensure the toggle is off and disabled
+    ensure start is grey and disabled
+    ensure end is grey and disabled
+    press done
+    ensure first list tile has walking icon
+    press first list tile
+    ... good start but is not decomposed enough and repeats lots of asserts
+*///
+
+I NOW THINK IT IS IMPORTANT THAT THE DRIVER TESTS
+ENSURE ONLY THE PART THAT THEY ARE LABELED WITH WORKS
+EVEN IF THEY HAVE TO PERFORM OTHER ACTIONS TO FULLY TEST THIS
+
+that way you can have one test for INITIAL+DONE_VALIDATION, which can
+do all the stuff needed to complete the form, but doesnt assert on anything
+besides the response of the done button to various stimuli
+
+this helps us focus on widgets rather than runs, allowing us
+to be sure each widget or widget group has been fully excercised
+without worrying what we did to arrive at the widget 
+or the branch that will excercise it
+
+INITIAL_DONE
+test with MAP+MEMORY ENTRY HAPPY/OFF PATH
+test with BUTTONS+MEMORY ENTRY HAPPY/OFF PATH
+test with AUTO ENTRY HAPPY/OFF PATH
+ensure DONE BUTTON VALIDATES 
+                    AND INFORMS 
+                    AND SUCCESSFULLY COMPLETES WHEN CONDITIONS ARE MET
+
+INITIAL_MAP_DONE
+test with MAP+MEMORY ENTRY HAPPY/OFF PATH
+test with BUTTONS+MEMORY ENTRY HAPPY/OFF PATH COMPLETE
+test with AUTO ENTRY HAPPY/OFF PATH COMPLETE
+ensure DONE BUTTON VALIDATES ON ENABLED
+                AND GOES BACK AND RESTORES STATE ON DISABLED
+                AND INFORMS
+                AND SUCCESSFULLY COMPLETES WHEN CONDITIONS ARE MET
+                
+
+    
+so this way we are doing many runs, but only asserting ~one widgets worth of functionality for each drive
+with provider we can also have different configs for different builds, so in debug build
+we could have a snackbar show each time a db is inserted to with the readout of that insert
+this will help us check the db without resorting to calling db functions directly
+
+doing this would only work if you had a run queue where you could stack as many tests into one run as you could
+while we might be able to do this someday
+we need to make runs test as much as possible in a very fragile way
+then we will simply have to comment which widgets each run covers
+
+so we should definitely test the happy and off paths together, progressing off path until happy is reached
+
+final tests
+
+waypoints = [waypoint_c, waypoint_a, waypoint_b]
+
+EVERY RUN NEEDS TO:
+    press the plus button 
+    set some fields (takes input)
+    open the map to check state
+    press done on the map
+    press done on initial
+
+
+most tests need to
+    check button colors
+    enter nothing
+    press done
+    check message
+    enter user
+    press done
+    check message
+    enter seconds
+    press done
+    check message
+    press map
+    press BACK
+    check state
+    do specific test stuff (memory+map, memory+buttons, auto)
+    after start and end are set except in memory+map
+        they need to check if map has no buttons and has back button
+    after start and end with map
+        they need to check if buttons can be cleared and done validation
+    ensure auto switch is disabled
+
+
+memory+map
+    press map
+    print ready for next waypoint
+    set start
+    print ready for next waypoint
+    set end
+    press done
+    ensure auto switch is disabled
+
+
+memory+buttons
+    print ready for next waypoint
+    press start
+    ensure map is disabled
+    ensure auto switch is disabled
+    press end
+    print ready for next waypoint
+    
+
+auto
+    toggle auto switch
+    ensure map is disabled
+    print ready for next waypoint
+    pres start
+    print ready for next waypoint
+    press end
+
+After Initial:
+    memory + map and auto:
+        check if icon on first listTile is walking man
+        print ready for next waypoint
+        tap first listTile
+        check start is purple and end is grey
+        print ready for next waypoint
+        check start is green and end is purple
+        check map, ensure no buttons
+        press done on map, ensure no state change except second > second_prior
+        print ready for next waypoint
+        check start is green and end is red
+        check map, ensure no buttons
+        press done on map, ensure no state change 
+        press done
+
+    memory+buttons:
+        check if icon on listTile is checkmark
