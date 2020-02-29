@@ -2,6 +2,9 @@
 flutter driver set up and run script for the Retrieval Collector or other location aware flutter app
 
 #setup
+you will need the rust toolchain to build this script
+https://www.rust-lang.org/tools/install
+
 after building a binary using cargo build, copy the resulting binary from
 target/release/run_driver to the flutter dir you wish to use it on
 it can then be run from there.
