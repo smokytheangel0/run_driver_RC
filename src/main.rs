@@ -164,10 +164,10 @@ fn main() {
                 */
                 for line in out.lines() {
                     let read_line = line.expect("failed to unwrap line in run stdout printer");
-                    if read_line.clone().contains("No supported devices connected.") {
+                    if read_line.contains("No supported devices connected.") {
                         panic!("dart: no device connected!");
                     }
-                    if read_line.clone().contains("http") {
+                    if read_line.contains("http") {
                         //split the attach address into a var
                         let attach_line: Vec<&str> = read_line.split(": ").collect();
                         attach_address = attach_line[1].trim().to_string();
@@ -340,7 +340,7 @@ fn main() {
     for line in out.lines() {
         let read_line = line.expect("failed to unwrap line in stdout printer");
 
-        if read_line.clone().contains("ready for next waypoint") {
+        if read_line.contains("ready for next waypoint") {
             let location = next_location(&mut LocationData, DEBUG);
             Command::new("adb")
                 .arg("shell")
@@ -358,10 +358,10 @@ fn main() {
                 .arg(format!("{}", location.latitude))
                 .output()
                 .expect("failed to set new locaiton");
-        } else if read_line.clone().contains("Exception") {
+        } else if read_line.contains("Exception") {
             println!("FATAL: {}", read_line);
             panic!("rust: caught a fatal error from dart!");
-        } else if read_line.clone().contains("reset waypoints") {
+        } else if read_line.contains("reset waypoints") {
             reset_location(&mut LocationData, DEBUG);
         } else {
             if expected_lines != 6 && expected_lines != 0 {
@@ -370,10 +370,10 @@ fn main() {
             }
             if DEBUG {
                 println!("out: {}", read_line);
-            } else if read_line.clone().contains("[E]") {
+            } else if read_line.contains("[E]") {
                 println!("dart: {}", read_line);
                 expected_lines -= 1;
-            } else if read_line.clone().contains("+") {
+            } else if read_line.contains("+") {
                 println!("dart: {}", read_line);
                 expected_lines = 6;
             }
