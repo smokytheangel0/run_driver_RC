@@ -1,19 +1,20 @@
 # run_driver_RC
 flutter driver set up and run script for the Retrieval Collector or other location aware flutter app
 
-#setup
-you will need the rust toolchain to build this script
+# setup
+you will need the rust toolchain to build this script \
 https://www.rust-lang.org/tools/install
 
-after building a binary using cargo build, copy the resulting binary from
-target/release/run_driver to the flutter dir you wish to use it on
+after building a binary using cargo build, copy the resulting binary from \
+target/release/run_driver to the flutter project dir you wish to use it on \
 it can then be run from there.
 
-#dependencies
-it is important that you have https://github.com/appium/io.appium.settings downloaded and built, and edit line 93
-or whichever line contains  ```Command::new("adb").arg("install")``` to include the path to the io.appium.settings apk
+# dependencies
+it is important that you have https://github.com/appium/io.appium.settings downloaded and built, and edit line 93  
+or whichever line contains  ```Command::new("adb").arg("install")``` to include the path to the io.appium.settings apk  
 
-it is also important that your flutter app has the flutter_driver dependency and that you have a test_driver folder with a main.dart (where app is inited with enableFlutterDriverExtension), and main_test.dart (where you driver test code should reside)
+it is also important that your flutter app has the flutter_driver dependency and that you have a test_driver folder\
+with a main.dart (where the app is inited with enableFlutterDriverExtension), and main_test.dart (where your driver test code should reside)  
 
 if this setup is not for you or you wish to use this with an already configured app, you can edit the line 144 (or the code 
 ``` 
