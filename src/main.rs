@@ -2,7 +2,7 @@ use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 use std::process::Command;
 use std::process::Stdio;
 use std::sync::mpsc;
@@ -156,34 +156,35 @@ fn main() {
                     .spawn()
                     .expect("failed to run flutter run");
 
-                let out = BufReader::new(
-                    run.stdout
-                        .take()
-                        .expect("failed to create bufreader from run stdout"),
-                );
-                /*
-                let err = BufReader::new(
-                    run.stderr
-                        .take()
-                        .expect("failed to create bufreader from run stderr"),
-                );
-                */
-                for line in out.lines() {
-                    let read_line = line.expect("failed to unwrap line in run stdout printer");
-                    if read_line.contains("No supported devices connected.") {
-                        panic!("dart: no device connected!");
-                    }
-                    if read_line.contains("http") {
-                        //split the attach address into a var
-                        let attach_line: Vec<&str> = read_line.split(": ").collect();
-                        attach_address = attach_line[1].trim().to_string();
-                        //save to text file for future runs using the same process
-                        let mut file = File::create("attach_address")
-                            .expect("failed to create attach address file");
-                        file.write_all(&format!("{}", attach_address).into_bytes())
-                            .expect("failed to write attach address to file");
-
-                        break;
+                {
+                    let out = BufReader::new(
+                        run.stdout
+                            .take()
+                            .expect("failed to create bufreader from run stdout"),
+                    );
+                    /*
+                    let err = BufReader::new(
+                        run.stderr
+                            .take()
+                            .expect("failed to create bufreader from run stderr"),
+                    );
+                    */
+                    for line in out.lines() {
+                        let read_line = line.expect("failed to unwrap line in run stdout printer");
+                        if read_line.contains("No supported devices connected.") {
+                            panic!("dart: no device connected!");
+                        }
+                        if read_line.contains("http") {
+                            //split the attach address into a var
+                            let attach_line: Vec<&str> = read_line.split(": ").collect();
+                            attach_address = attach_line[1].trim().to_string();
+                            //save to text file for future runs using the same process
+                            let mut file = File::create("attach_address")
+                                .expect("failed to create attach address file");
+                            file.write_all(&format!("{}", attach_address).into_bytes())
+                                .expect("failed to write attach address to file");
+                            break;
+                        }
                     }
                 }
                 /*this needs to run on a different
