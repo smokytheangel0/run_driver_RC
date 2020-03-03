@@ -20,6 +20,12 @@ struct Locations {
     index: usize,
 }
 
+///TODO
+/// functionize
+/// use a loop that waits on user input
+/// instead of flags, so that you can
+/// shut everything down cleanly on exit
+
 fn main() {
     let mut DEBUG: bool = false;
     let args: Vec<String> = env::args().collect();
